@@ -5,12 +5,13 @@ This is a Python program that predicts stock prices using artificial intelligenc
 To run this program, you will need:
 
 Python 3.x
-yfinance
-numpy
-pandas
-plotly
-tensorflow
-tkinter
+~ yfinance
+~ numpy
+~ pandas
+~ plotly
+~ tensorflow
+~ tkinter
+
 You can install these requirements using pip:
 
 
