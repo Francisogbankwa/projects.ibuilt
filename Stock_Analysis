@@ -1,0 +1,47 @@
+import yfinance as yf
+import pandas as pd
+from sklearn.linear_model import LinearRegression
+import matplotlib.pyplot as plt
+
+# Get the user input
+ticker = input("Enter a stock symbol: ")
+
+# Download the data from Yahoo Finance
+data = yf.download(ticker, start="2020-01-01", end="2023-03-06")
+
+# Calculate the daily returns
+data['Return'] = data['Adj Close'].pct_change()
+
+# Drop any missing values
+data.dropna(inplace=True)
+
+# Split the data into training and test sets
+train_size = int(len(data) * 0.8)
+train_data, test_data = data[:train_size], data[train_size:]
+
+# Create a linear regression model
+model = LinearRegression()
+
+# Train the model on the training data
+X_train = train_data['Return'].values.reshape(-1, 1)
+y_train = train_data['Adj Close'].values.reshape(-1, 1)
+model.fit(X_train, y_train)
+
+# Make predictions on the test data
+X_test = test_data['Return'].values.reshape(-1, 1)
+y_test = test_data['Adj Close'].values.reshape(-1, 1)
+y_pred = model.predict(X_test)
+
+# Create a new DataFrame that combines the actual and predicted values
+results = pd.DataFrame({'Actual': y_test.flatten(), 'Predicted': y_pred.flatten()})
+
+# Create a new column with the date in a readable format
+results['Date'] = test_data.index.strftime('%b-%Y')
+
+# Plot the actual and predicted values on a single graph
+plt.plot(results['Actual'], label='Actual')
+plt.plot(results['Predicted'], label='Predicted')
+plt.legend()
+plt.xlabel('Date')
+plt.ylabel('Close Price (M)')
+plt.show()
